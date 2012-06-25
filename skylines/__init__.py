@@ -1,2 +1,5 @@
-# -*- coding: utf-8 -*-
-"""The SkyLines package"""
+from flask import Flask
+
+app = Flask(__name__)
+
+import skylines.views

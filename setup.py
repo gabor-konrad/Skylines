@@ -25,6 +25,7 @@ testpkgs = [
 ]
 
 install_requires = [
+    "flask",
     "TurboGears2 >= 2.1.4",
 
     # Pylons 1.0.1 breaks, because it depends on "WebOb>=1.1.1", but
