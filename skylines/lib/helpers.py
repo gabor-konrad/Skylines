@@ -10,6 +10,8 @@ from datetime import timedelta
 from babel.dates import format_date, format_time, format_datetime
 from babel.numbers import format_number
 
+from skylines.lib.gravatar import get_url as gravatar
+
 
 def format_timedelta(delta):
     if isinstance(delta, timedelta):

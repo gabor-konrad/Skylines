@@ -142,3 +142,13 @@ a.no-link {
 .olFullscreen .olControlScaleLine {
   bottom: 100pt !important;
 }
+
+.gravatar {
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+}
+
+.navbar .gravatar {
+  margin: -5px 5px;
+}

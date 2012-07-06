@@ -53,6 +53,7 @@
 
           <li py:if="request.identity" class="${('', 'active')[defined('page') and page=='settings']} dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="${h.gravatar(request.identity['user'].email_address, size=24)}" class="gravatar" />
               ${request.identity['user'].display_name} <i class="icon-caret-down"></i>
             </a>
             <ul class="dropdown-menu">
