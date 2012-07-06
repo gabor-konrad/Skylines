@@ -18,6 +18,7 @@
 
     <thead>
       <tr>
+        <th style="width: 20px"></th>
         <th>Name</th>
         <th py:if="club_column">Club</th>
         <th>Actions</th>
@@ -26,6 +27,9 @@
     <tbody>
       <tr py:for="user in users" py:attrs="pilot_attrs">
         <meta itemprop="url" content="/users/${user.user_id}" />
+        <td>
+          <img src="${h.gravatar(user.email_address, size=20)}" class="gravatar"/>
+        </td>
         <td itemprop="name">
           <a href="/users/${user.user_id}/" py:content="user">
             Name
