@@ -146,9 +146,8 @@ def add_locations(locations):
         <h2>Following</h2>
         <ul class="row-fluid">
           <li class="span3" py:for="following in user.following">
-            <a href="/users/${following.destination_id}/"
-               py:content="following.destination">
-              Following Name
+            <a href="/users/${following.destination_id}/">
+              <img src="${h.gravatar(following.destination.email_address, size=20)}" class="gravatar"/><span py:content="following.destination">Following Name</span>
             </a>
           </li>
         </ul>
@@ -158,9 +157,8 @@ def add_locations(locations):
         <h2>Followers</h2>
         <ul class="row-fluid">
           <li class="span3" py:for="follower in user.followers">
-            <a href="/users/${follower.source_id}/"
-               py:content="follower.source">
-              Follower Name
+            <a href="/users/${follower.source_id}/">
+              <img src="${h.gravatar(follower.source.email_address, size=20)}" class="gravatar"/><span py:content="follower.source">Follower Name</span>
             </a>
           </li>
         </ul>

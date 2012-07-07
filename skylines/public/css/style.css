@@ -157,6 +157,10 @@ a.no-link {
   margin: 2px 6px 2px 0px;
 }
 
+ul.row-fluid .gravatar {
+  margin: 2px 6px 4px 0px;
+}
+
 .tooltip {
   z-index: 2000;
 }
