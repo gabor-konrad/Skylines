@@ -30,7 +30,7 @@
     </head>
   </py:match>
 
-  <table py:def="render_details_table(flight)" class="table" itemscope="" itemtype="http://schema.org/SportsEvent">
+  <table py:def="render_details_table(flight)" class="table flight-details" itemscope="" itemtype="http://schema.org/SportsEvent">
     <meta itemprop="url" content="/flights/${flight.id}" />
     <tbody>
       <tr py:if="flight.takeoff_time">
@@ -116,15 +116,23 @@
         <th>Pilot</th>
         <td>
           <a py:if="flight.is_writable()" href="change_pilot" class="btn btn-mini" style="float: right;">Change</a>
+
           <span py:if="flight.pilot" itemprop="performer" itemscope="" itemtype="http://schema.org/Person">
             <meta itemprop="url" content="/users/${flight.pilot_id}" />
-            <a py:content="flight.pilot" href="/users/${flight.pilot_id}/" itemprop="name">Pilot Name</a>
+            <a href="/users/${flight.pilot_id}/" itemprop="name">
+              <img src="${h.gravatar(flight.pilot.email_address, size=24)}" class="gravatar" /><span py:replace="flight.pilot">Pilot Name</span>
+            </a>
           </span>
+
           <br py:if="flight.pilot and flight.co_pilot" />
+
           <span py:if="flight.co_pilot" itemprop="performer" itemscope="" itemtype="http://schema.org/Person">
             <meta itemprop="url" content="/users/${flight.co_pilot_id}" />
-            <a py:content="flight.co_pilot" href="/users/${flight.co_pilot_id}/" itemprop="name">Co-Pilot Name</a>
+            <a href="/users/${flight.co_pilot_id}/" itemprop="name">
+              <img src="${h.gravatar(flight.co_pilot.email_address, size=24)}" class="gravatar" /><span py:replace="flight.co_pilot">Co-Pilot Name</span>
+            </a>
           </span>
+
           <span py:if="not flight.pilot and not flight.co_pilot" py:strip="True">
             [unspecified]
           </span>
