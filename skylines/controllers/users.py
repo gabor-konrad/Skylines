@@ -212,7 +212,7 @@ class UserController(BaseController):
 class UsersController(BaseController):
     @expose('skylines.templates.users.list')
     def index(self):
-        users = DBSession.query(User).order_by(User.display_name)
+        users = DBSession.query(User).order_by(func.lower(User.display_name))
         return dict(page='settings', users=users)
 
     @expose()

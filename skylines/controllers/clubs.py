@@ -9,6 +9,7 @@ from tw.forms import TextField
 from skylines.lib.base import BaseController
 from skylines.model import DBSession, User, Group, Club
 from skylines.form import BootstrapForm
+from sqlalchemy import func
 
 class EditClubForm(EditableForm):
     __base_widget_type__ = BootstrapForm
@@ -93,7 +94,7 @@ class ClubController(BaseController):
 class ClubsController(BaseController):
     @expose('skylines.templates.clubs.list')
     def index(self):
-        clubs = DBSession.query(Club).order_by(Club.name)
+        clubs = DBSession.query(Club).order_by(func.lower(Club.name))
         return dict(page='settings', clubs=clubs)
 
     @expose()
