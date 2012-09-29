@@ -19,6 +19,7 @@ from skylines.controllers.notifications import NotificationsController
 from skylines.controllers.ranking import RankingController
 from skylines.controllers.tracking import TrackingController
 from skylines.controllers.statistics import StatisticsController
+from skylines.controllers.uploads import UploadsController
 
 __all__ = ['RootController']
 
@@ -47,6 +48,7 @@ class RootController(BaseController):
     ranking = RankingController()
     tracking = TrackingController()
     statistics = StatisticsController()
+    uploads = UploadsController()
 
     if 'skylines.mapproxy' in config:
         # plug local mapproxy/mapserver at /mapproxy/
