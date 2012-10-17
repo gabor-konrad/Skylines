@@ -30,7 +30,7 @@ class IGCFile(DeclarativeBase):
     competition_id = Column(Unicode(5))
     model = Column(Unicode(64))
 
-    date_utc = Column(Date)
+    date_utc = Column(Date, nullable=False)
 
     @classmethod
     def by_md5(cls, _md5):
