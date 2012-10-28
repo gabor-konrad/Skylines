@@ -7,6 +7,7 @@ from skylines.model.session import DBSession, init_model
 # Import your model modules here.
 from skylines.model.auth import User, Group, Permission
 from skylines.model.model import Model
+from skylines.model.elevation import Elevation
 from skylines.model.flight import Flight
 from skylines.model.flight_comment import FlightComment
 from skylines.model.flight_phase import FlightPhase
