@@ -10,12 +10,16 @@ from tw.forms.fields import TextField
 from sprox.formbase import EditableForm
 from sprox.widgets import PropertySingleSelectField
 from skylines.controllers.base import BaseController
+from skylines.lib.base import BaseController
+from sqlalchemy.sql.expression import and_, func, literal_column
 from skylines import files
-from skylines.model import DBSession, User, Flight, Model, FlightPhase
+from skylines.model import (DBSession, User, Flight, Model, FlightPhase,
+                            IGCFile, Elevation)
 from skylines.model.flight_comment import FlightComment
 from skylines.model.notification import create_flight_comment_notifications
 from skylines.lib.xcsoar import analyse_flight, flight_path
 from skylines.lib.helpers import format_time, format_number
+from skylines.lib.sql import extract_array_item, extract_field
 from skylines.lib import units
 from skylines.form import BootstrapForm
 from skylinespolyencode import SkyLinesPolyEncoder
@@ -97,11 +101,60 @@ def get_flight_path(flight, threshold=0.001, max_points=3000):
     barogram_h = encoder.encodeList([fp[i].altitude for i in range(len(fp)) if fixes['levels'][i] != -1])
     enl = encoder.encodeList([fp[i].enl for i in range(len(fp)) if fixes['levels'][i] != -1])
 
+    elevations_t, elevations_h = get_elevations(flight, encoder)
     contest_traces = get_contest_traces(flight, encoder)
 
     return dict(encoded=encoded, zoom_levels=zoom_levels, fixes=fixes,
-                barogram_t=barogram_t, barogram_h=barogram_h, enl=enl, contests=contest_traces,
+                barogram_t=barogram_t, barogram_h=barogram_h,
+                enl=enl, contests=contest_traces,
+                elevations_t=elevations_t, elevations_h=elevations_h,
                 sfid=flight.id)
+
+
+def get_elevations(flight, encoder):
+    # Prepare column expressions
+    locations = func.ST_DUMP(IGCFile.locations)
+    location_id = extract_array_item(extract_field(locations, 'path'), 1)
+    location = extract_field(locations, 'geom')
+
+    # Prepare subquery
+    subq = DBSession.query(location_id.label('location_id'),
+                           location.label('location')) \
+                    .filter(IGCFile.id == flight.igc_file_id).subquery()
+
+    # Prepare column expressions
+    timestamp = literal_column('timestamps[location_id]')
+    elevation = func.ST_VALUE(Elevation.rast, subq.c.location)
+
+    # Prepare main query
+    q = DBSession.query(timestamp.label('timestamp'),
+                        elevation.label('elevation')) \
+                 .filter(and_(IGCFile.id == flight.igc_file_id,
+                              func.ST_INTERSECTS(subq.c.location, Elevation.rast),
+                              elevation != None)).all()
+
+    if len(q) == 0:
+        return [], []
+
+    # Assemble elevation data
+    elevations_t = []
+    elevations_h = []
+
+    start_time = q[0][0]
+    start_midnight = start_time.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    for time, elevation in q:
+        time_delta = time - start_midnight
+        time = time_delta.days * 86400 + time_delta.seconds
+
+        elevations_t.append(time)
+        elevations_h.append(elevation)
+
+    # Encode lists
+    elevations_t = encoder.encodeList(elevations_t)
+    elevations_h = encoder.encodeList(elevations_h)
+
+    return elevations_t, elevations_h
 
 
 def get_contest_traces(flight, encoder):
