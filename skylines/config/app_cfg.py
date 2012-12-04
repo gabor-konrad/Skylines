@@ -13,6 +13,7 @@ convert them into boolean, for example, you should use the
  
 """
 
+import os
 from tg.configuration import AppConfig
 
 import skylines
@@ -67,3 +68,14 @@ base_config.sa_auth.post_login_url = '/post_login'
 # You may optionally define a page where you want users to be redirected to
 # on logout:
 base_config.sa_auth.post_logout_url = '/post_logout'
+
+def on_after_config(app):
+    from tg import config
+    from skylines.lib.assets import Environment
+    g = config['pylons.app_globals']
+    g.assets = Environment(config)
+    g.assets.load_bundles(os.path.join(config.here, 'assets', 'bundles.yaml'))
+
+    return app
+
+base_config.register_hook('after_config', on_after_config)

@@ -15,4 +15,4 @@ class Globals(object):
 
     def __init__(self):
         """Do nothing, by default."""
-        pass
+        self.assets = None

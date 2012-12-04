@@ -49,6 +49,9 @@ install_requires = [
     "crc16",
     "markdown",
     "pytz",
+    "webassets",
+    "pyyaml",
+    "cssmin",
 ]
 
 if sys.version_info[:2] == (2, 4):
